@@ -4,7 +4,7 @@ CREATE TABLE Patient
   First_Name VARCHAR(12) NOT NULL,
   Surname VARCHAR(20) NOT NULL,
   Street VARCHAR(16) NOT NULL,
-  Town/City VARCHAR(16) NOT NULL,
+  Town VARCHAR(16) NOT NULL,
   County VARCHAR(16) NOT NULL,
   Ethnicity VARCHAR(16) NOT NULL,
   Sex CHAR(1) NOT NULL,
@@ -14,32 +14,16 @@ CREATE TABLE Patient
   PRIMARY KEY (PPSN)
 );
 
-CREATE TABLE Case
-(
-  ID INT NOT NULL,
-  Date DATE NOT NULL,
-  Details VARCHAR(512),
-  Bed_No. INT,
-  Priority INT NOT NULL,
-  Patient CHAR(8) NOT NULL,
-  Doctor CHAR(8) NOT NULL,
-  PRIMARY KEY (ID),
-  FOREIGN KEY (Patient) REFERENCES Patient(PPSN),
-  FOREIGN KEY (Doctor) REFERENCES Staff(PPSN),
-  FOREIGN KEY (Bed_No) REFERENCES Bed(Bed_No)
-);
-
 CREATE TABLE Staff
 (
-  PPSN CHAR(8) NOT NULL,
-  First_Name VARCHAR(16) NOT NULL,
-  Second_Name VARCHAR(20) NOT NULL,
-  Role VARCHAR(20) NOT NULL,
-  Dept INT NOT NULL,
-  Supervisor CHAR(8),
-  PRIMARY KEY (PPSN),
-  FOREIGN KEY (Dept) REFERENCES Department(DeptNo),
-  FOREIGN KEY (Supervisor) REFERENCES Staff(PPSN)
+PPSN CHAR(8) NOT NULL,
+First_Name VARCHAR(16) NOT NULL,
+Second_Name VARCHAR(20) NOT NULL,
+Role VARCHAR(20) NOT NULL,
+Dept INT NOT NULL,
+Supervisor CHAR(8),
+PRIMARY KEY (PPSN),
+FOREIGN KEY (Supervisor) REFERENCES Staff(PPSN)
 );
 
 CREATE TABLE Department
@@ -47,34 +31,35 @@ CREATE TABLE Department
 DeptNo INT NOT NULL,
 Department_Name VARCHAR(16) NOT NULL,
 Dept_Head CHAR(8) NOT NULL,
-PRIMARY KEY (DeptNo)
+PRIMARY KEY (DeptNo),
 FOREIGN KEY (Dept_Head) REFERENCES Staff(PPSN)
 );
 
-CREATE TABLE Procedure
-(
-  ID INT NOT NULL,
-  Type VARCHAR(16) NOT NULL,
-  Location INT NOT NULL,
-  PRIMARY KEY (ID)
-);
-
-CREATE TABLE Performs
-(
-  Procedure INT NOT NULL,
-  Staff CHAR(8) NOT NULL,
-  PRIMARY KEY (Procedure, Staff),
-  FOREIGN KEY (Procedure) REFERENCES Procedure(ID),
-  FOREIGN KEY (Staff) REFERENCES Staff(PPSN)
-);
+ALTER TABLE Staff ADD FOREIGN KEY (Dept) REFERENCES Department(DeptNo);
 
 CREATE TABLE Bed
 (
-  Number INT NOT NULL,
-  Location INT NOT NULL,
-  PRIMARY KEY (Number),
-  FOREIGN KEY (Location) REFERENCES Department(DeptNo)
+Number INT NOT NULL,
+Location INT NOT NULL,
+PRIMARY KEY (Number),
+FOREIGN KEY (Location) REFERENCES Department(DeptNo)
 );
+
+CREATE TABLE Stay
+(
+ID INT NOT NULL,
+Date DATE NOT NULL,
+Details VARCHAR(512),
+Bed_No INT,
+Priority INT NOT NULL,
+Patient CHAR(8) NOT NULL,
+Doctor CHAR(8) NOT NULL,
+PRIMARY KEY (ID),
+FOREIGN KEY (Patient) REFERENCES Patient(PPSN),
+FOREIGN KEY (Doctor) REFERENCES Staff(PPSN),
+FOREIGN KEY (Bed_No) REFERENCES Bed(Bed_No)
+);
+
 
 CREATE TABLE Room
 (
@@ -85,11 +70,22 @@ CREATE TABLE Room
   FOREIGN KEY (Location) REFERENCES Department(DeptNo)
 );
 
-CREATE TABLE conducted
+CREATE TABLE Operation
 (
-  Case INT NOT NULL,
-  Procedure INT NOT NULL,
-  PRIMARY KEY (Case, Procedure),
-  FOREIGN KEY (Case) REFERENCES Case(ID),
-  FOREIGN KEY (Procedure) REFERENCES Procedure(ID)
+  ID INT NOT NULL,
+  Type VARCHAR(16) NOT NULL,
+  Room INT NOT NULL,
+  Patient_Case INT NOT NULL,
+  PRIMARY KEY (ID),
+  FOREIGN KEY (Room) REFERENCES Room(Number),
+  FOREIGN KEY (Patient_Case) REFERENCES Stay(ID)
+);
+
+CREATE TABLE Performs
+(
+  Operation INT NOT NULL,
+  Staff CHAR(8) NOT NULL,
+  PRIMARY KEY (Operation, Staff),
+  FOREIGN KEY (Operation) REFERENCES Operation(ID),
+  FOREIGN KEY (Staff) REFERENCES Staff(PPSN)
 );
