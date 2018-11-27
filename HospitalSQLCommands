@@ -1,0 +1,95 @@
+CREATE TABLE Patient
+(
+  PPSN CHAR(8) NOT NULL,
+  First_Name VARCHAR(12) NOT NULL,
+  Surname VARCHAR(20) NOT NULL,
+  Street VARCHAR(16) NOT NULL,
+  Town/City VARCHAR(16) NOT NULL,
+  County VARCHAR(16) NOT NULL,
+  Ethnicity VARCHAR(16) NOT NULL,
+  Sex CHAR(1) NOT NULL,
+  Height INT NOT NULL,
+  Weight INT NOT NULL,
+  Blood_Group VARCHAR(3) NOT NULL,
+  PRIMARY KEY (PPSN)
+);
+
+CREATE TABLE Case
+(
+  ID INT NOT NULL,
+  Date DATE NOT NULL,
+  Details VARCHAR(512),
+  Bed_No. INT,
+  Priority INT NOT NULL,
+  Patient CHAR(8) NOT NULL,
+  Doctor CHAR(8) NOT NULL,
+  PRIMARY KEY (ID),
+  FOREIGN KEY (Patient) REFERENCES Patient(PPSN),
+  FOREIGN KEY (Doctor) REFERENCES Staff(PPSN),
+  FOREIGN KEY (Bed_No) REFERENCES Bed(Bed_No)
+);
+
+CREATE TABLE Staff
+(
+  PPSN CHAR(8) NOT NULL,
+  First_Name VARCHAR(16) NOT NULL,
+  Second_Name VARCHAR(20) NOT NULL,
+  Role VARCHAR(20) NOT NULL,
+  Dept INT NOT NULL,
+  Supervisor CHAR(8),
+  PRIMARY KEY (PPSN),
+  FOREIGN KEY (Dept) REFERENCES Department(DeptNo),
+  FOREIGN KEY (Supervisor) REFERENCES Staff(PPSN)
+);
+
+CREATE TABLE Department
+(
+DeptNo INT NOT NULL,
+Department_Name VARCHAR(16) NOT NULL,
+Dept_Head CHAR(8) NOT NULL,
+PRIMARY KEY (DeptNo)
+FOREIGN KEY (Dept_Head) REFERENCES Staff(PPSN)
+);
+
+CREATE TABLE Procedure
+(
+  ID INT NOT NULL,
+  Type VARCHAR(16) NOT NULL,
+  Location INT NOT NULL,
+  PRIMARY KEY (ID)
+);
+
+CREATE TABLE Performs
+(
+  Procedure INT NOT NULL,
+  Staff CHAR(8) NOT NULL,
+  PRIMARY KEY (Procedure, Staff),
+  FOREIGN KEY (Procedure) REFERENCES Procedure(ID),
+  FOREIGN KEY (Staff) REFERENCES Staff(PPSN)
+);
+
+CREATE TABLE Bed
+(
+  Number INT NOT NULL,
+  Location INT NOT NULL,
+  PRIMARY KEY (Number),
+  FOREIGN KEY (Location) REFERENCES Department(DeptNo)
+);
+
+CREATE TABLE Room
+(
+  Number INT NOT NULL,
+  Type VARCHAR(16) NOT NULL,
+  Location INT NOT NULL,
+  PRIMARY KEY (Number),
+  FOREIGN KEY (Location) REFERENCES Department(DeptNo)
+);
+
+CREATE TABLE conducted
+(
+  Case INT NOT NULL,
+  Procedure INT NOT NULL,
+  PRIMARY KEY (Case, Procedure),
+  FOREIGN KEY (Case) REFERENCES Case(ID),
+  FOREIGN KEY (Procedure) REFERENCES Procedure(ID)
+);
