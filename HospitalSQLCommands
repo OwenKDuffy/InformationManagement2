@@ -30,7 +30,7 @@ CREATE TABLE Department
 (
 DeptNo INT NOT NULL,
 Department_Name VARCHAR(16) NOT NULL,
-Dept_Head CHAR(8) NOT NULL,
+Dept_Head CHAR(8),
 PRIMARY KEY (DeptNo),
 FOREIGN KEY (Dept_Head) REFERENCES Staff(PPSN)
 );
@@ -89,3 +89,74 @@ CREATE TABLE Performs
   FOREIGN KEY (Operation) REFERENCES Operation(ID),
   FOREIGN KEY (Staff) REFERENCES Staff(PPSN)
 );
+
+ALTER TABLE Patient DROP COLUMN Sex;
+ALTER TABLE Patient ADD COLUMN Sex ENUM('M','F');
+
+ALTER TABLE patient DROP COLUMN BLood_Group;
+ALTER TABLE patient ADD COLUMN Blood_Group ENUM('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-');
+
+INSERT INTO patient (PPSN, First_Name, Surname, Street, Town, County, Ethnicity, Sex, Height, Weight, Blood_Group) VALUES ('67849364t', 'John', 'Smith', 'Main Street' , 'Bray', 'Wicklow', 'Irish', 'M', '167', '56', 'A+');
+INSERT INTO patient (PPSN, First_Name, Surname, Street, Town, County, Ethnicity, Sex, Height, Weight, Blood_Group) VALUES ('4512354t', 'Mary', 'McKenna', 'Sea Road' , 'Arklow', 'Wicklow', 'Irish', 'F', '125', '49', 'A-');
+INSERT INTO patient (PPSN, First_Name, Surname, Street, Town, County, Ethnicity, Sex, Height, Weight, Blood_Group) VALUES ('1234567r', 'Mohammed', 'AlAfra', 'Pearse ST' , 'Dublin', 'Dublin', 'Arabic', 'M', '174', '77', 'OB-')
+UPDATE patient SET Blood_Group = '0-' WHERE PPSN = '1234567r';
+INSERT INTO patient (PPSN, First_Name, Surname, Street, Town, County, Ethnicity, Sex, Height, Weight, Blood_Group) VALUES ('8854621r', 'Alex', 'O''Dwyer', 'Grove Road' , 'Dundalk', 'Louth', 'Irish', 'M', '184', '84', 'AB+')
+INSERT INTO patient (PPSN, First_Name, Surname, Street, Town, County, Ethnicity, Sex, Height, Weight, Blood_Group) VALUES ('5562137p', 'Jorge', 'Rivas', 'The Meadows' , 'Shankill', 'Dublin', 'Spanish', 'M', '184', '79', 'O+');
+
+ALTER TABLE department MODIFY Dept_Head CHAR(8);
+
+INSERT INTO department (DeptNo, Department_Name, Dept_Head) VALUES ('0', 'Administration', NULL);
+INSERT INTO department (DeptNo, Department_Name, Dept_Head) VALUES ('1', 'Medicine', NULL);
+INSERT INTO department (DeptNo, Department_Name, Dept_Head) VALUES ('2', 'Surgery', NULL);
+INSERT INTO department (DeptNo, Department_Name, Dept_Head) VALUES ('3', 'Emergency', NULL);
+INSERT INTO department (DeptNo, Department_Name, Dept_Head) VALUES ('5', 'Facilities', NULL);
+
+
+INSERT INTO staff (PPSN, First_Name, Second_Name, Role, Dept, Supervisor) VALUES ('7764512f', 'William', 'Burke', 'Doctor', '1', NULL);
+INSERT INTO staff (PPSN, First_Name, Second_Name, Role, Dept, Supervisor) VALUES ('1234567r', 'Mohammed', 'AlAfra', 'Surgeon', '2', NULL);
+INSERT INTO staff (PPSN, First_Name, Second_Name, Role, Dept, Supervisor) VALUES ('4562112r', 'Mary', 'O''Shea', 'Doctor', '3', NULL);
+INSERT INTO staff (PPSN, First_Name, Second_Name, Role, Dept, Supervisor) VALUES ('5671234h', 'Roy', 'Higgins', 'Groundsman', '5', NULL)
+INSERT INTO staff (PPSN, First_Name, Second_Name, Role, Dept, Supervisor) VALUES ('7768304g', 'Lucinda', 'Dwyer', 'CEO', '0', NULL);
+
+
+INSERT INTO Bed (Number, Location) VALUES ('001', '1');
+INSERT INTO Bed (Number, Location) VALUES ('002', '1');
+INSERT INTO Bed (Number, Location) VALUES ('003', '1');
+INSERT INTO Bed (Number, Location) VALUES ('004', '1');
+INSERT INTO Bed (Number, Location) VALUES ('201', '2');
+
+INSERT INTO Stay (ID, Date, Bed_No, Details, Priority, Patient, Doctor) VALUES ('2456', '2018/10/21', '001', 'Patient referred by GP with Jaundice', '2', '4512354t', '7764512f');
+INSERT INTO Stay (ID, Date, Bed_No, Details, Priority, Patient, Doctor) VALUES ('4552', '2018/11/26', '003', 'Patient referred by GP', '3', '67849364t', '7764512f');
+INSERT INTO Stay (ID, Date, Bed_No, Details, Priority, Patient, Doctor) VALUES ('4561', '2018/11/28', '201', 'Patient has urgent case of Appendicitis', '1', '5562137p', '1234567r');
+INSERT INTO Stay (ID, Date, Bed_No, Details, Priority, Patient, Doctor) VALUES ('2312', '2018/11/28', NULL, 'Patient Arrived to A&E with Broken Arm', '4', '8854621r', '4562112r');
+INSERT INTO Stay (ID, Date, Bed_No, Details, Priority, Patient, Doctor) VALUES ('7895', '2018/11/28', NULL, 'Patient Arrived to A&E after RTI', '1', '1234567r', '4562112r');
+INSERT INTO staff (PPSN, First_Name, Second_Name, Role, Dept, Supervisor) VALUES ('7756392u', 'John', 'King', 'Technician', '4', '7764512f')
+
+INSERT INTO Room (Number, Type, Location) VALUES ('456', 'Operating Theathre', '2');
+INSERT INTO department (DeptNo, Department_Name, Dept_Head) VALUES ('4', 'Radiology', NULL);
+INSERT INTO Room (Number, Type, Location) VALUES ('123', 'X-Ray', '4');
+INSERT INTO Room (Number, Type, Location) VALUES ('124', 'MRI', '4');
+INSERT INTO Room (Number, Type, Location) VALUES ('457', 'Operating Theathre', '2');
+INSERT INTO Room (Number, Type, Location) VALUES ('012', 'Examination Clinic', '1');
+
+UPDATE Room SET Type = 'Operating Theatre' WHERE Type = 'Operating Theath';
+
+
+INSERT INTO operation (ID, Type, Room, Patient_Case) VALUES ('1', 'Appendectomy', '456', '4561');
+INSERT INTO operation (ID, Type, Room, Patient_Case) VALUES ('2', 'X-Ray', '123', '2312');
+INSERT INTO operation (ID, Type, Room, Patient_Case) VALUES ('3', 'Examination', '012', '4552');
+INSERT INTO operation (ID, Type, Room, Patient_Case) VALUES ('4', 'X-Ray', '123', '4552');
+INSERT INTO operation (ID, Type, Room, Patient_Case) VALUES ('5', 'MRI', '124', '4552');
+
+INSERT INTO performs (Operation, Staff) VALUES ('1', '1234567r');
+INSERT INTO performs (Operation, Staff) VALUES ('2', '7756392u');
+INSERT INTO performs (Operation, Staff) VALUES ('4', '7756392u');
+INSERT INTO performs (Operation, Staff) VALUES ('5', '7756392u');
+INSERT INTO performs (Operation, Staff) VALUES ('3', '7764512f');
+
+UPDATE department SET Dept_Head = '7764512f' WHERE DeptNo = '1';
+UPDATE department SET Dept_Head = '1234567r' WHERE DeptNo = '2';
+UPDATE department SET Dept_Head = '4562112r' WHERE DeptNo = '3';
+UPDATE department SET Dept_Head = '7768304g' WHERE DeptNo = '0';
+UPDATE department SET Dept_Head = '7756392u' WHERE DeptNo = '4';
+UPDATE department SET Dept_Head = '5671234h' WHERE DeptNo = '5';
