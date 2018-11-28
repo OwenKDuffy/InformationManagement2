@@ -103,6 +103,8 @@ UPDATE patient SET Blood_Group = '0-' WHERE PPSN = '1234567r';
 INSERT INTO patient (PPSN, First_Name, Surname, Street, Town, County, Ethnicity, Sex, Height, Weight, Blood_Group) VALUES ('8854621r', 'Alex', 'O''Dwyer', 'Grove Road' , 'Dundalk', 'Louth', 'Irish', 'M', '184', '84', 'AB+')
 INSERT INTO patient (PPSN, First_Name, Surname, Street, Town, County, Ethnicity, Sex, Height, Weight, Blood_Group) VALUES ('5562137p', 'Jorge', 'Rivas', 'The Meadows' , 'Shankill', 'Dublin', 'Spanish', 'M', '184', '79', 'O+');
 
+UPDATE patient SET Blood_Group = 'O-' WHERE PPSN = '1234567r';
+
 ALTER TABLE department MODIFY Dept_Head CHAR(8);
 
 INSERT INTO department (DeptNo, Department_Name, Dept_Head) VALUES ('0', 'Administration', NULL);
@@ -160,3 +162,5 @@ UPDATE department SET Dept_Head = '4562112r' WHERE DeptNo = '3';
 UPDATE department SET Dept_Head = '7768304g' WHERE DeptNo = '0';
 UPDATE department SET Dept_Head = '7756392u' WHERE DeptNo = '4';
 UPDATE department SET Dept_Head = '5671234h' WHERE DeptNo = '5';
+
+CREATE VIEW patient_med_details AS SELECT First_Name, Surname, Ethnicity, Sex, Height, Weight, Blood_Group FROM patient;
